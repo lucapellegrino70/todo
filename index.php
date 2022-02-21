@@ -1,56 +1,88 @@
 <?php 
+
+	// load the header file and config file
 	require_once('layout/header.php');
 	require_once('config/config.php');
 
+	// Open database connection to SQLite DB
 	$db = sqlite_open('database/todo.db');
 	
+	// Initialize variable for displaying messages
 	$msg = "";
 	
+	// If $_POST action exists (in case a task is added/edited/deleted/confirmed)
 	if (isset($_POST["action"])) {
 		
+		// If $_POST id exists
 		if (isset($_POST['id'])) {
+			// Gets the value of id
 			$id = $_POST["id"];
 			
+			// If action is to delete a task
 			if ($_POST["action"] == "delete") {
+				
+				// Set $sql variable with SQL statement for deleting the record
 				$sql = "DELETE FROM tasks WHERE id= ".$id;
+				
+				// Set message to be displayed on the screen 
 				$msg = "Task deleted!";
-			} else if ($_POST["action"] == "complete") {
+			} else if ($_POST["action"] == "complete") { // If action is to complete a task
+				// Set $sql variable with SQL statement for completing task
 				$sql = "UPDATE tasks SET completed=1 WHERE id= ".$id;
+				
+				// Set message to be displayed on the screen 
 				$msg = "Task completed!";
-			} else if ($_POST["action"] == "edit") {
+			} else if ($_POST["action"] == "edit") { // If action is to save edited task
+			
+				// Gets the value of task name and priority
 				$task = str_replace("'", "´", trim($_POST["task"]));
 				$priority = trim($_POST["priority"]);
-				
+			
+				// Set $sql variable with SQL statement for updating the record
 				$sql = "UPDATE tasks SET name='".$task."', priority=".$priority." WHERE id= ".$id;
+				
+				// Set message to be displayed on the screen 
 				$msg = "Task updated!";
 			}
 			
 		}
 		
+		// If action is to add new task
 		if ($_POST["action"] == "add") {
+			// Gets the value of task name and priority
 			$task = str_replace("'", "´", trim($_POST["task"]));
 			$priority = trim($_POST["priority"]);
 			
+			// Set $sql variable with SQL statement for creating a new task
 			$sql = "INSERT INTO tasks ('name', 'priority', 'completed') VALUES ('$task', $priority, 0)";
+			
+			// Set message to be displayed on the screen
 			$msg = "Task created!";			
 		}	
 		
+		// Execute the SQL statement 
 		$result = $db->query($sql);		
 	}
-		
+	
+	// Gets all the tasks ordered by priority and name
 	$result = $db->query('SELECT * FROM tasks ORDER BY priority ASC, name ASC');
 	
 ?>
 <div class="container">
 	<h2>ToDo List</h2>
 
+	<!-- if $msg variable is not empty, shows a message on screen -->
 	<?php if ($msg != "") { ?>
 		<div class="alert alert-success alert-dismissible fade show" role="alert">
 		  <?php echo $msg;?>
 		  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 		</div>
 	<?php } ?>
+	
+	<!-- Display button for showing modal for creating new task -->
 	<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTask">Add Task</button>
+	
+	<!-- Display table with all records -->
 	<div class="table-responsive">
 		<table class="table table-striped table-sm">
 		  <thead>
@@ -68,13 +100,17 @@
 				$completedTasks = 0;
 		  
 				while ($row = $result->fetchArray()) {
+					
+					// Increase counter for total tasks
 					$totalTasks++;
 					
+					// If priority = 0 set red background with white text color
 					if ((int)$row['priority'] == 0)
 						$clsBackground = "class='bg-danger text-white'";
-					else
-						$clsBackground = "class='bg-light'";
+					else // If priority is not 0 set normal background color
+						$clsBackground = "class='bg-light'"; 
 					
+					// If task is completed increase counter for completed tasks
 					if ($row['completed'] == 1)
 						$completedTasks++;
 					
@@ -99,6 +135,7 @@
 		
 	</div>
 
+	<!-- Display modal for creating new task -->
 	<div class="modal fade" id="addTask" tabindex="-1" aria-labelledby="addTaskLabel" aria-hidden="true">
 	  <div class="modal-dialog">
 		<div class="modal-content">
@@ -128,7 +165,7 @@
 	  </div>
 	</div>
 
-
+	<!-- Display modal for editing existing task -->
 	<div class="modal fade" id="editTask" tabindex="-1" aria-labelledby="editTaskLabel" aria-hidden="true">
 	  <div class="modal-dialog">
 		<div class="modal-content">
@@ -160,6 +197,12 @@
 	</div>
 </div>	
 <?php 
+
+	// Return a string for the priority
+	// High = Priority 0
+	// Medium = Priority 1
+	// Low = Priority 2
+	
 	function getPriority($priority) {
 			
 		if ((int)$priority == 0)
@@ -172,5 +215,5 @@
 	}	
 ?>
 
-
+<!-- Load footer with JS -->
 <?php require_once('layout/footer.php'); ?>
