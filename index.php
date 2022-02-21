@@ -17,17 +17,24 @@
 			} else if ($_POST["action"] == "complete") {
 				$sql = "UPDATE tasks SET completed=1 WHERE id= ".$id;
 				$msg = "Task completed!";
+			} else if ($_POST["action"] == "edit") {
+				$task = str_replace("'", "´", trim($_POST["task"]));
+				$priority = trim($_POST["priority"]);
+				
+				$sql = "UPDATE tasks SET name='".$task."', priority=".$priority." WHERE id= ".$id;
+				$msg = "Task updated!";
 			}
+			
 		}
 		
 		if ($_POST["action"] == "add") {
+			$task = str_replace("'", "´", trim($_POST["task"]));
 			$priority = trim($_POST["priority"]);
-			$task = trim($_POST["task"]);
 			
 			$sql = "INSERT INTO tasks ('name', 'priority', 'completed') VALUES ('$task', $priority, 0)";
 			$msg = "Task created!";			
 		}	
-			
+		
 		$result = $db->query($sql);		
 	}
 		
@@ -72,7 +79,8 @@
 				echo "<td>";
 				echo ($row['completed'] == 1) ? 'Yes' : 'No';
 				echo "</td>";
-				echo "<td><form class='float-sm-start px-2' method='post' onsubmit='return confirmDelete();'><input type='hidden' name='id' value='".$row['id']."'><input type='hidden' name='action' value='delete'><input type='submit' class='btn btn-danger' name='submit' value='Delete'></form>";
+				echo "<td><input type='button' class='btn btn-warning float-sm-start px-2' name='edit' id='edittask' value='Edit' data-id='".$row['id']."' data-task='".$row['name']."' data-priority='".$row['priority']."'>		
+				<form class='float-sm-start px-2' method='post' onsubmit='return confirmDelete();'><input type='hidden' name='id' value='".$row['id']."'><input type='hidden' name='action' value='delete'><input type='submit' class='btn btn-danger' name='submit' value='Delete'></form>";
 				echo ($row['completed'] == 0) ? "<form method='post'><input type='hidden' name='id' value='".$row['id']."'><input type='hidden' name='action' value='complete'><input type='submit' class='btn btn-success' name='complete' value='Complete'></form>" : "";
 				echo "</td>";
 				echo "</tr>";
@@ -85,7 +93,7 @@
 	
 </div>
 
-<div class="modal fade" id="addTask" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="addTask" tabindex="-1" aria-labelledby="addTaskLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -114,6 +122,36 @@
   </div>
 </div>
 
+
+<div class="modal fade" id="editTask" tabindex="-1" aria-labelledby="editTaskLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Task</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+   	  <form method="post" id="form-add">
+      <div class="modal-body">
+			<label>Task Name</label>
+			<input type="text" class="form-control" name="task" id="edit_task" placeholder="Insert the task name" required />
+			<label>Priority</label>
+			<select class="form-control" name="priority" id="edit_priority" required>
+				<option value="">Select Priority</option>
+				<option value="0">High</option>
+				<option value="1">Medium</option>
+				<option value="2">Low</option>
+			</select>
+			<input type="hidden" name="action" value="edit" />
+			<input type="hidden" name="id" id="edit_id" value="" />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save</button>
+      </div>
+	  </form>
+    </div>
+  </div>
+</div>
 <?php 
 	function getPriority($priority) {
 			
@@ -127,14 +165,5 @@
 	}	
 ?>
 
-<script>
-	function confirmDelete() {
-		if (confirm('Do you really want to delete the record?'))
-			return true;
-		else
-			return false;
-	
-	}	
 
-</script>
 <?php require_once('layout/footer.php'); ?>
