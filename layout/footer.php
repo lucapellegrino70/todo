@@ -2,15 +2,24 @@
 
 	</body>
 	
-	<!-- Load Bootstrap JS, jQuery and Popper JS -->
+	<!-- Load jQuery, Bootstrap JS, Popper JS, DataTables -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
-	
+	<script src="//cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
 	
 	<script>
 		$(document).ready(function() {
 			
+			
+			// Initialize DataTable and remove sorting from Actions column
+			$('#tasksTable').DataTable({
+			 'columnDefs': [ {
+				'targets': [4], // column index (start from 0)
+				'orderable': false, // set orderable false for selected columns
+			 }]
+		   });
+						  
 			// Click event when user click the Edit button on the task row of the table
 			// It gets the id, task name and priority and sets the input/select fields with those value and display the Edit Task modal 
 			$('#edittask').click(function() {
