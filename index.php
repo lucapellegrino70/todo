@@ -69,7 +69,7 @@
 	
 ?>
 <div class="container">
-	<h2>ToDo List</h2>
+	<h2 class="text-center">ToDo List</h2>
 
 	<!-- if $msg variable is not empty, shows a message on screen -->
 	<?php if ($msg != "") { ?>
@@ -80,11 +80,11 @@
 	<?php } ?>
 	
 	<!-- Display button for showing modal for creating new task -->
-	<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTask">Add Task</button>
+	<button type="button" class="btn btn-primary mt-5 mb-5" data-bs-toggle="modal" data-bs-target="#addTask">Add Task</button>
 	
 	<!-- Display table with all records -->
 	<div class="table-responsive">
-		<table class="table table-striped table-sm">
+		<table class="table table-striped table-sm" id="tasksTable">
 		  <thead>
 			<tr>
 			  <th scope="col">#</th>
@@ -121,9 +121,9 @@
 					echo "<td>";
 					echo ($row['completed'] == 1) ? 'Yes' : 'No';
 					echo "</td>";
-					echo "<td><input type='button' class='btn btn-warning float-sm-start px-2' name='edit' id='edittask' value='Edit' data-id='".$row['id']."' data-task='".$row['name']."' data-priority='".$row['priority']."'>		
-					<form class='float-sm-start px-2' method='post' onsubmit='return confirmDelete();'><input type='hidden' name='id' value='".$row['id']."'><input type='hidden' name='action' value='delete'><input type='submit' class='btn btn-danger' name='submit' value='Delete'></form>";
-					echo ($row['completed'] == 0) ? "<form method='post'><input type='hidden' name='id' value='".$row['id']."'><input type='hidden' name='action' value='complete'><input type='submit' class='btn btn-success' name='complete' value='Complete'></form>" : "";
+					echo "<td><input type='button' class='btn btn-warning float-sm-start px-2 border border-dark' name='edit' id='edittask' value='Edit' data-id='".$row['id']."' data-task='".$row['name']."' data-priority='".$row['priority']."'>		
+					<form class='float-sm-start px-2' method='post' onsubmit='return confirmDelete();'><input type='hidden' name='id' value='".$row['id']."'><input type='hidden' name='action' value='delete'><input type='submit' class='btn btn-danger border border-dark' name='submit' value='Delete'></form>";
+					echo ($row['completed'] == 0) ? "<form method='post'><input type='hidden' name='id' value='".$row['id']."'><input type='hidden' name='action' value='complete'><input type='submit' class='btn btn-success border border-dark' name='complete' value='Complete'></form>" : "";
 					echo "</td>";
 					echo "</tr>";
 				}
