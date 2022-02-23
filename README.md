@@ -1,4 +1,10 @@
 # todo
+
+To enable SQLite on my Windows/Apache/PHP setup, I uncomment the following lines in the php.ini file and restart Apache:
+
+extension=php_pdo.dll
+extension=php_pdo_sqlite.dll
+
 Add host in your apache/nginx server configuration file. 
 Example for local installation on Apache server:
 
